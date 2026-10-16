@@ -12,7 +12,7 @@ $py = ".\.venv\Scripts\python.exe"
 & $py -m pip install --upgrade pip
 
 if (-not (Test-Path lerobot)) {
-    git clone https://github.com/huggingface/lerobot.git lerobot
+    git clone -c core.autocrlf=false https://github.com/huggingface/lerobot.git lerobot   # LF files so the patch applies
     git -C lerobot checkout $LEROBOT_COMMIT
     git -C lerobot apply ..\patches\lerobot_so_follower.patch
 }
