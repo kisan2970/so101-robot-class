@@ -1,0 +1,17 @@
+# environments and the cloned LeRobot (setup.ps1 recreates them)
+.venv/
+.venv-smolvla/
+lerobot/
+
+# data, models, logs (large / personal: camera images of the room)
+datasets/
+outputs/
+models/
+autograsp/runs/
+
+# per-rig files created on each PC
+autograsp/config/safety.json
+autograsp/config/sector_conditions*.csv
+
+__pycache__/
+*.pyc

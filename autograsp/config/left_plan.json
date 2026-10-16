@@ -1,0 +1,411 @@
+{
+  "seed": 0,
+  "layout": "3x3 keypad as seen from behind the robot: 1 2 3 (far) / 4 5 6 / 7 8 9 (near); target = separate fixed cell to the left of the grid",
+  "blocks": [
+    {
+      "block": "R1-B1",
+      "round": 1,
+      "target": "left",
+      "target_label": "the LEFT cell",
+      "task": "Move the dice to the left cell.",
+      "episodes": [
+        {
+          "k": 0,
+          "start": 8
+        },
+        {
+          "k": 1,
+          "start": 6
+        },
+        {
+          "k": 2,
+          "start": 2
+        },
+        {
+          "k": 3,
+          "start": 4
+        },
+        {
+          "k": 4,
+          "start": 5
+        },
+        {
+          "k": 5,
+          "start": 3
+        },
+        {
+          "k": 6,
+          "start": 1
+        },
+        {
+          "k": 7,
+          "start": 9
+        },
+        {
+          "k": 8,
+          "start": 7
+        }
+      ]
+    },
+    {
+      "block": "R1-B2",
+      "round": 1,
+      "target": "left",
+      "target_label": "the LEFT cell",
+      "task": "Move the dice to the left cell.",
+      "episodes": [
+        {
+          "k": 0,
+          "start": 3
+        },
+        {
+          "k": 1,
+          "start": 1
+        },
+        {
+          "k": 2,
+          "start": 4
+        },
+        {
+          "k": 3,
+          "start": 9
+        },
+        {
+          "k": 4,
+          "start": 7
+        },
+        {
+          "k": 5,
+          "start": 2
+        },
+        {
+          "k": 6,
+          "start": 5
+        },
+        {
+          "k": 7,
+          "start": 6
+        },
+        {
+          "k": 8,
+          "start": 8
+        }
+      ]
+    },
+    {
+      "block": "R1-B3",
+      "round": 1,
+      "target": "left",
+      "target_label": "the LEFT cell",
+      "task": "Move the dice to the left cell.",
+      "episodes": [
+        {
+          "k": 0,
+          "start": 3
+        },
+        {
+          "k": 1,
+          "start": 1
+        },
+        {
+          "k": 2,
+          "start": 4
+        },
+        {
+          "k": 3,
+          "start": 9
+        },
+        {
+          "k": 4,
+          "start": 7
+        },
+        {
+          "k": 5,
+          "start": 6
+        },
+        {
+          "k": 6,
+          "start": 8
+        },
+        {
+          "k": 7,
+          "start": 5
+        },
+        {
+          "k": 8,
+          "start": 2
+        }
+      ]
+    },
+    {
+      "block": "R2-B1",
+      "round": 2,
+      "target": "left",
+      "target_label": "the LEFT cell",
+      "task": "Move the dice to the left cell.",
+      "episodes": [
+        {
+          "k": 0,
+          "start": 8
+        },
+        {
+          "k": 1,
+          "start": 7
+        },
+        {
+          "k": 2,
+          "start": 9
+        },
+        {
+          "k": 3,
+          "start": 3
+        },
+        {
+          "k": 4,
+          "start": 1
+        },
+        {
+          "k": 5,
+          "start": 5
+        },
+        {
+          "k": 6,
+          "start": 4
+        },
+        {
+          "k": 7,
+          "start": 6
+        },
+        {
+          "k": 8,
+          "start": 2
+        }
+      ]
+    },
+    {
+      "block": "R2-B2",
+      "round": 2,
+      "target": "left",
+      "target_label": "the LEFT cell",
+      "task": "Move the dice to the left cell.",
+      "episodes": [
+        {
+          "k": 0,
+          "start": 2
+        },
+        {
+          "k": 1,
+          "start": 7
+        },
+        {
+          "k": 2,
+          "start": 6
+        },
+        {
+          "k": 3,
+          "start": 1
+        },
+        {
+          "k": 4,
+          "start": 3
+        },
+        {
+          "k": 5,
+          "start": 5
+        },
+        {
+          "k": 6,
+          "start": 9
+        },
+        {
+          "k": 7,
+          "start": 8
+        },
+        {
+          "k": 8,
+          "start": 4
+        }
+      ]
+    },
+    {
+      "block": "R2-B3",
+      "round": 2,
+      "target": "left",
+      "target_label": "the LEFT cell",
+      "task": "Move the dice to the left cell.",
+      "episodes": [
+        {
+          "k": 0,
+          "start": 3
+        },
+        {
+          "k": 1,
+          "start": 5
+        },
+        {
+          "k": 2,
+          "start": 9
+        },
+        {
+          "k": 3,
+          "start": 4
+        },
+        {
+          "k": 4,
+          "start": 1
+        },
+        {
+          "k": 5,
+          "start": 8
+        },
+        {
+          "k": 6,
+          "start": 6
+        },
+        {
+          "k": 7,
+          "start": 7
+        },
+        {
+          "k": 8,
+          "start": 2
+        }
+      ]
+    },
+    {
+      "block": "R3-B1",
+      "round": 3,
+      "target": "left",
+      "target_label": "the LEFT cell",
+      "task": "Move the dice to the left cell.",
+      "episodes": [
+        {
+          "k": 0,
+          "start": 3
+        },
+        {
+          "k": 1,
+          "start": 4
+        },
+        {
+          "k": 2,
+          "start": 1
+        },
+        {
+          "k": 3,
+          "start": 9
+        },
+        {
+          "k": 4,
+          "start": 7
+        },
+        {
+          "k": 5,
+          "start": 5
+        },
+        {
+          "k": 6,
+          "start": 8
+        },
+        {
+          "k": 7,
+          "start": 2
+        },
+        {
+          "k": 8,
+          "start": 6
+        }
+      ]
+    },
+    {
+      "block": "R3-B2",
+      "round": 3,
+      "target": "left",
+      "target_label": "the LEFT cell",
+      "task": "Move the dice to the left cell.",
+      "episodes": [
+        {
+          "k": 0,
+          "start": 6
+        },
+        {
+          "k": 1,
+          "start": 7
+        },
+        {
+          "k": 2,
+          "start": 8
+        },
+        {
+          "k": 3,
+          "start": 1
+        },
+        {
+          "k": 4,
+          "start": 4
+        },
+        {
+          "k": 5,
+          "start": 5
+        },
+        {
+          "k": 6,
+          "start": 3
+        },
+        {
+          "k": 7,
+          "start": 9
+        },
+        {
+          "k": 8,
+          "start": 2
+        }
+      ]
+    },
+    {
+      "block": "R3-B3",
+      "round": 3,
+      "target": "left",
+      "target_label": "the LEFT cell",
+      "task": "Move the dice to the left cell.",
+      "episodes": [
+        {
+          "k": 0,
+          "start": 4
+        },
+        {
+          "k": 1,
+          "start": 1
+        },
+        {
+          "k": 2,
+          "start": 8
+        },
+        {
+          "k": 3,
+          "start": 3
+        },
+        {
+          "k": 4,
+          "start": 9
+        },
+        {
+          "k": 5,
+          "start": 5
+        },
+        {
+          "k": 6,
+          "start": 7
+        },
+        {
+          "k": 7,
+          "start": 6
+        },
+        {
+          "k": 8,
+          "start": 2
+        }
+      ]
+    }
+  ]
+}

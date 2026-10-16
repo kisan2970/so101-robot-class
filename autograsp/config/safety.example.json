@@ -1,0 +1,54 @@
+{
+  "joint_limits": {
+    "shoulder_pan": [
+      -65.0,
+      71.33
+    ],
+    "shoulder_lift": [
+      -96.56,
+      111.68
+    ],
+    "elbow_flex": [
+      -102.01,
+      90.67
+    ],
+    "wrist_flex": [
+      -30.63,
+      106.23
+    ],
+    "wrist_roll": [
+      -51.02,
+      51.99
+    ],
+    "gripper": [
+      0.0,
+      55.84
+    ]
+  },
+  "max_step": {
+    "shoulder_pan": 13.84,
+    "shoulder_lift": 15.0,
+    "elbow_flex": 15.0,
+    "wrist_flex": 15.0,
+    "wrist_roll": 8.23,
+    "gripper": 100.0
+  },
+  "rest_pose": {
+    "shoulder_pan": 21.01,
+    "shoulder_lift": -17.93,
+    "elbow_flex": -14.77,
+    "wrist_flex": 83.87,
+    "wrist_roll": 9.98,
+    "gripper": 0.48
+  },
+  "units": "degrees for body joints (use_degrees=True), 0-100 for gripper; max_step caps |goal - measured position| per control tick",
+  "control_fps": 30.0,
+  "provisional": false,
+  "source_datasets": [
+    "(example) 9 teleop demos recorded on the instructor rig"
+  ],
+  "n_frames": 4336,
+  "n_episodes": 9,
+  "created": "2026-10-15T22:13:46",
+  "_comment": "예시 안전 범위(강사 로봇 기준). 자기 시범을 녹화했다면 derive_limits.py 로 다시 만드세요."
+}

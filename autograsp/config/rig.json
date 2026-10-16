@@ -1,0 +1,43 @@
+{
+  "_comment": "학생용 설정 파일. port(COM 번호)와 카메라 index는 각자 PC에 맞게 바꾸세요. start_pose/place_pose는 servo_pick.py --teach-start / --teach-place 로 직접 저장하세요(아래 값은 예시).",
+  "follower": {
+    "port": "COM5",
+    "id": "so101_follower"
+  },
+  "leader": {
+    "port": "COM6",
+    "id": "so101_leader"
+  },
+  "cameras": {
+    "wrist": {
+      "type": "opencv",
+      "index_or_path": 1,
+      "width": 640,
+      "height": 480,
+      "fps": 30,
+      "backend": 700
+    }
+  },
+  "control_fps": 30,
+  "task": "Move the dice to the left cell.",
+  "datasets_root": "datasets",
+  "train_repo": "local/so101_sector_train",
+  "heldout_repo": "local/so101_sector_heldout",
+  "outputs_root": "outputs",
+  "start_pose": {
+    "shoulder_pan": 21.0,
+    "shoulder_lift": -17.9,
+    "elbow_flex": -14.8,
+    "wrist_flex": 83.9,
+    "wrist_roll": 10.0,
+    "_source": "예시 값 - 반드시 --teach-start 로 다시 저장"
+  },
+  "place_pose": {
+    "shoulder_pan": -58.2,
+    "shoulder_lift": 21.5,
+    "elbow_flex": 9.1,
+    "wrist_flex": 38.1,
+    "wrist_roll": -12.7,
+    "_source": "예시 값 - 반드시 --teach-place 로 다시 저장"
+  }
+}
