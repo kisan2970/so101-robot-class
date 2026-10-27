@@ -1,0 +1,17 @@
+Sources used for SO-101 classroom materials
+
+- Hugging Face LeRobot SO-101 documentation
+  https://huggingface.co/docs/lerobot/en/so101
+  Used for SO-101 leader/follower setup, motor setup and calibration workflow.
+
+- Seeed Studio SO-ARM100/101 guide
+  https://wiki.seeedstudio.com/lerobot_so100m_new/
+  Used for hardware safety, controller, power and assembly imagery.
+
+- TheRobotStudio SO-ARM100 repository
+  https://github.com/TheRobotStudio/SO-ARM100
+  Used as supporting reference for motor ordering and arm structure.
+
+- Existing local LeRobot command outputs supplied by the user during SO-101 setup.
+  Used to match the Windows .venv executable style and observed command names.
+

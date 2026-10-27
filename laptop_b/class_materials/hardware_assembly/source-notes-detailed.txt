@@ -1,0 +1,13 @@
+Audience: first-time students; wording should remain understandable to elementary school students while retaining technical accuracy.
+Sources:
+- https://huggingface.co/docs/lerobot/en/so101
+- https://wiki.seeedstudio.com/lerobot_so100m_new/
+- https://github.com/TheRobotStudio/SO-ARM100
+Verified assembly details used:
+- Clean support material before assembly and add one 3-pin cable after placing each motor.
+- Joint 1: top horn center M3x6; no center screw on bottom horn; motor fixed with four M2x6; holder with two M2x6; shoulder connected with M3x6 screws.
+- Joint 2: motor fixed with four M2x6; upper arm attached with four M3x6 on each side.
+- Joint 3: motor fixed with four M2x6; forearm attached with four M3x6 on each side.
+- Joint 4: holder slides over motor; motor fixed with four M2x6.
+- Joint 5: motor fixed with two front M2x6; one horn uses an M3x6 center screw; wrist attaches to motor 4 with M3x6 screws.
+- Follower gripper differs from leader handle after the common arm assembly steps.

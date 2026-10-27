@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SO-101 처음 설치 수업</title>
+  <style>
+    :root{--ink:#17201e;--muted:#5d6965;--paper:#fff;--line:#cdd5d2;--green:#117a65;--green2:#e2f3ed;--blue:#2368b1;--blue2:#e7f0fb;--yellow:#9a6500;--yellow2:#fff2cc;--red:#b62d32;--red2:#fde7e8;--dark:#1d2825}
+    *{box-sizing:border-box}body{margin:0;background:#f3f5f4;color:var(--ink);font-family:"Malgun Gothic","Segoe UI",sans-serif;letter-spacing:0}header{background:var(--dark);color:#fff;padding:28px 24px}header div,main,footer div{max-width:1080px;margin:auto}h1{font-size:30px;margin:0 0 8px}header p{margin:0;color:#d9e2df}main{padding:22px}.top,.step{background:#fff;border:1px solid var(--line);padding:20px;margin-bottom:16px}.top{border-top:6px solid var(--blue)}.step{border-top:6px solid var(--green)}.step.danger{border-top-color:var(--red)}h2{font-size:22px;margin:0 0 12px}h3{font-size:19px;margin:0 0 7px}p{line-height:1.65;color:var(--muted);margin:5px 0}.number{font-size:12px;color:var(--green);font-weight:800}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}label{display:block;font-size:13px;font-weight:700;margin-bottom:5px}input{width:100%;height:42px;border:1px solid var(--line);padding:0 12px;font:inherit}.notice{background:var(--yellow2);border-left:5px solid var(--yellow);padding:13px 15px;margin:14px 0;font-weight:700}.warning{background:var(--red2);border-left:5px solid var(--red);padding:13px 15px;margin:14px 0;font-weight:700}.buttons{display:flex;gap:8px;flex-wrap:wrap;margin:13px 0}button,a.action{border:0;background:var(--green);color:#fff;height:42px;padding:0 16px;font:700 14px inherit;text-decoration:none;display:inline-flex;align-items:center;cursor:pointer}button.blue,a.blue{background:var(--blue)}button:hover,a.action:hover{filter:brightness(.92)}pre{white-space:pre-wrap;word-break:break-word;background:var(--dark);color:#eef7f4;padding:15px;line-height:1.55;font:14px Consolas,monospace;overflow:auto}.result{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.ok,.check{padding:12px 14px}.ok{background:var(--green2)}.check{background:var(--blue2)}code{font-family:Consolas,monospace}.small{font-size:13px}footer{background:#dde5e2;padding:20px 24px;margin-top:24px;font-size:13px}#toast{position:fixed;right:18px;bottom:18px;background:var(--dark);color:#fff;padding:12px 16px;display:none}@media(max-width:720px){.fields,.result{grid-template-columns:1fr}main{padding:10px}}
+  </style>
+</head>
+<body>
+<header><div><h1>SO-101 처음 설치부터 캘리브레이션까지</h1><p>아무것도 설치되지 않은 Windows 노트북용 수업 페이지</p></div></header>
+<main>
+  <section class="top"><h2>먼저 확인</h2><div class="notice">인터넷과 Microsoft Store를 사용할 수 있어야 합니다. 무료 계정은 Codex 사용량 제한이 있을 수 있습니다.</div><div class="fields"><div><label for="leader">리더암 포트</label><input id="leader" value="COM10"></div><div><label for="follower">팔로워암 포트</label><input id="follower" value="COM11"></div></div><p class="small">COM10과 COM11은 예시입니다. 포트 확인 단계가 끝난 뒤 실제 번호로 바꾸세요.</p></section>
+
+  <section class="step"><div class="number">0단계</div><h3>ChatGPT 데스크톱 앱 설치</h3><p>공식 다운로드 페이지에서 Windows 앱을 설치합니다.</p><div class="buttons"><a class="action blue" href="https://chatgpt.com/download/" target="_blank" rel="noopener">공식 다운로드 페이지 열기</a><button data-copy="appCmd">설치 명령 복사</button></div><pre id="appCmd"></pre></section>
+  <section class="step"><div class="number">1단계</div><h3>무료 계정 로그인 후 Codex 선택</h3><p>앱을 열어 ChatGPT 계정으로 로그인하고 왼쪽 위 메뉴에서 Codex를 선택합니다.</p><div class="warning">Codex 메뉴가 보이지 않으면 수업을 시작하기 전에 교사에게 알리세요.</div></section>
+  <section class="step"><div class="number">2단계</div><h3>배포 ZIP 압축 풀기</h3><p>ZIP 안에서 실행하지 말고 마우스 오른쪽 버튼 → 모두 압축 풀기를 사용합니다. 압축을 푼 폴더의 주소 표시줄에 <code>powershell</code>을 입력해 PowerShell을 엽니다.</p></section>
+  <section class="step"><div class="number">3단계 · 권장</div><h3>자동 설치 스크립트 실행</h3><p>Python 3.12, 프로젝트 폴더, 가상환경, LeRobot 패키지를 설치합니다.</p><div class="buttons"><button data-copy="scriptCmd">실행 명령 복사</button></div><pre id="scriptCmd"></pre><div class="result"><div class="ok"><b>정상</b><br>마지막에 SETUP COMPLETE 표시</div><div class="check"><b>Python 설치 후 중단</b><br>PowerShell을 닫고 같은 폴더에서 다시 실행</div></div></section>
+  <section class="step"><div class="number">4단계 · 수동 설치</div><h3>스크립트가 안 될 때 Python 3.12 설치</h3><div class="buttons"><button data-copy="pythonCmd">명령 복사</button><button data-copy="pythonCheck" class="blue">설치 확인 복사</button></div><pre id="pythonCmd"></pre><pre id="pythonCheck"></pre></section>
+  <section class="step"><div class="number">5단계 · 수동 설치</div><h3>가상환경과 LeRobot 설치</h3><p>다운로드 시간이 걸릴 수 있습니다. 설치 중 창을 닫지 않습니다.</p><div class="buttons"><button data-copy="envCmd">명령 복사</button></div><pre id="envCmd"></pre></section>
+  <section class="step"><div class="number">6단계</div><h3>설치 확인</h3><div class="buttons"><button data-copy="verifyCmd">명령 복사</button><button data-copy="masterPrompt" class="blue">Codex 시작 프롬프트 복사</button></div><pre id="verifyCmd"></pre><div class="result"><div class="ok"><b>정상</b><br>Python 3.12와 lerobot 정보 출력</div><div class="check"><b>오류</b><br>오류 진단 프롬프트에 마지막 20~30줄 전달</div></div></section>
+  <section class="step danger"><div class="number">7단계</div><h3>안전 확인</h3><div class="warning">모터 ID 지정 시 대상 모터 한 개만 연결합니다. 갑자기 움직이면 즉시 전원을 끕니다.</div><p>전원 전압, USB, 3핀 케이블, 관절 간섭, 전원 스위치 위치를 확인합니다.</p></section>
+  <section class="step"><div class="number">8단계</div><h3>COM 포트 확인</h3><div class="buttons"><button data-copy="portPrompt">Codex 프롬프트 복사</button><button data-copy="portCmd" class="blue">명령 복사</button></div><pre id="portCmd"></pre><p><b>SO-101 포트:</b> USB-Enhanced-SERIAL CH343(COM번호)</p></section>
+  <section class="step danger"><div class="number">9단계</div><h3>리더암 모터 ID 지정</h3><div class="buttons"><button data-copy="leaderPrompt">Codex 프롬프트 복사</button><button data-copy="leaderCmd" class="blue">명령 복사</button></div><pre id="leaderCmd"></pre></section>
+  <section class="step danger"><div class="number">10단계</div><h3>팔로워암 모터 ID 지정</h3><div class="buttons"><button data-copy="followerPrompt">Codex 프롬프트 복사</button><button data-copy="followerCmd" class="blue">명령 복사</button></div><pre id="followerCmd"></pre></section>
+  <section class="step"><div class="number">11단계</div><h3>모터 1~6 인식 확인</h3><p>캘리브레이션 연결 과정에서 Found motor list에 ID 1~6이 모두 표시되는지 확인합니다. 빠진 ID가 있으면 진행하지 않습니다.</p><div class="buttons"><button data-copy="motorCheckPrompt">Codex 프롬프트 복사</button></div></section>
+  <section class="step danger"><div class="number">12단계</div><h3>팔로워암 캘리브레이션</h3><div class="buttons"><button data-copy="followerCalPrompt">Codex 프롬프트 복사</button><button data-copy="followerCalCmd" class="blue">명령 복사</button></div><pre id="followerCalCmd"></pre></section>
+  <section class="step danger"><div class="number">13단계</div><h3>리더암 캘리브레이션</h3><div class="buttons"><button data-copy="leaderCalPrompt">Codex 프롬프트 복사</button><button data-copy="leaderCalCmd" class="blue">명령 복사</button></div><pre id="leaderCalCmd"></pre></section>
+  <section class="step danger"><div class="number">오류</div><h3>Codex에 오류 전달</h3><div class="buttons"><button data-copy="errorPrompt">오류 진단 프롬프트 복사</button></div><pre id="errorPrompt"></pre></section>
+</main>
+<footer><div>공식 자료 기준: OpenAI Windows 데스크톱 앱 및 Hugging Face LeRobot SO-101 문서. 수업 범위는 캘리브레이션까지입니다.</div></footer><div id="toast">복사했습니다.</div>
+<script>
+const $=id=>document.getElementById(id);const ports=()=>({leader:$("leader").value.trim().toUpperCase(),follower:$("follower").value.trim().toUpperCase()});
+const base=`$Project = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'lerobot-so101'\nSet-Location -LiteralPath $Project`;
+const T={
+appCmd:`winget install --id=9NT1R1C2HH7J --source=msstore --accept-package-agreements --accept-source-agreements`,
+scriptCmd:`Set-ExecutionPolicy -Scope Process Bypass -Force\nUnblock-File .\\SO101_처음설치.ps1\n.\\SO101_처음설치.ps1`,
+pythonCmd:`winget install --id Python.Python.3.12 -e --source winget --accept-package-agreements --accept-source-agreements`,
+pythonCheck:`py -3.12 --version`,
+envCmd:`$Project = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'lerobot-so101'\nNew-Item -ItemType Directory -Force -Path $Project | Out-Null\nSet-Location -LiteralPath $Project\npy -3.12 -m venv .venv\n.\\.venv\\Scripts\\python.exe -m pip install --upgrade pip\n.\\.venv\\Scripts\\python.exe -m pip install "lerobot[core_scripts,feetech]" opencv-python pyserial`,
+verifyCmd:`${base}\n.\\.venv\\Scripts\\python.exe --version\n.\\.venv\\Scripts\\python.exe -m pip show lerobot\nGet-ChildItem .\\.venv\\Scripts\\lerobot-*.exe | Select-Object Name`,
+masterPrompt:`너는 학교 SO-101 실습을 돕는 개발 도우미야. 아무것도 설치되지 않은 Windows 노트북에서 Python 3.12, .venv, LeRobot 설치부터 모터 ID와 캘리브레이션까지 한 단계씩 안내해. Conda는 쓰지 말고 PowerShell 명령을 한 코드블록씩 줘. 포트를 추측하지 말고, 하드웨어를 움직이기 전 안전을 확인해. AI 학습과 카메라로 넘어가지 마.`,
+portPrompt:`설치가 끝났어. CH343 SO-101 제어 보드의 실제 COM 포트를 찾고 리더와 팔로워를 구분하도록 한 단계씩 안내해 줘.`,
+portCmd:`${base}\n.\\.venv\\Scripts\\python.exe -m serial.tools.list_ports -v`,
+leaderPrompt:`리더암 포트는 {{leader}}야. 대상 모터 한 개씩만 연결하여 ID 1~6과 baudrate를 설정하도록 안내해 줘.`,
+leaderCmd:`${base}\n.\\.venv\\Scripts\\lerobot-setup-motors.exe --teleop.type=so101_leader --teleop.port={{leader}}`,
+followerPrompt:`팔로워암 포트는 {{follower}}야. 대상 모터 한 개씩만 연결하여 ID 1~6과 baudrate를 설정하도록 안내해 줘.`,
+followerCmd:`${base}\n.\\.venv\\Scripts\\lerobot-setup-motors.exe --robot.type=so101_follower --robot.port={{follower}}`,
+motorCheckPrompt:`리더 포트는 {{leader}}, 팔로워 포트는 {{follower}}야. 모터 ID 1~6이 모두 인식되는지 움직임 없이 확인하도록 안내해 줘.`,
+followerCalPrompt:`팔로워 포트는 {{follower}}야. 안전한 중간 자세부터 캘리브레이션을 한 단계씩 안내해 줘.`,
+followerCalCmd:`${base}\n.\\.venv\\Scripts\\lerobot-calibrate.exe --robot.type=so101_follower --robot.port={{follower}} --robot.id=my_so101_follower`,
+leaderCalPrompt:`리더 포트는 {{leader}}야. 안전한 중간 자세부터 캘리브레이션을 한 단계씩 안내해 줘.`,
+leaderCalCmd:`${base}\n.\\.venv\\Scripts\\lerobot-calibrate.exe --teleop.type=so101_leader --teleop.port={{leader}} --teleop.id=my_so101_leader`,
+errorPrompt:`SO-101 실습 중 오류가 발생했어.\n현재 단계: [설치/포트/ID/캘리브레이션]\n실행 명령어: [붙여넣기]\n오류 메시지: [마지막 20~30줄]\n설치 단계에서는 Python 경로와 .venv를 먼저 보고, 하드웨어 단계에서는 전원·포트 점유·케이블·ID·펌웨어·기구 간섭 순서로 안전하게 진단해 줘.`};
+function render(k){const p=ports();return T[k].replaceAll("{{leader}}",p.leader).replaceAll("{{follower}}",p.follower)}function refresh(){["appCmd","scriptCmd","pythonCmd","pythonCheck","envCmd","verifyCmd","portCmd","leaderCmd","followerCmd","followerCalCmd","leaderCalCmd","errorPrompt"].forEach(k=>{if($(k))$(k).textContent=render(k)})}async function copy(t){try{await navigator.clipboard.writeText(t)}catch(e){const q=document.createElement("textarea");q.value=t;document.body.appendChild(q);q.select();document.execCommand("copy");q.remove()}$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",1200)}document.querySelectorAll("button[data-copy]").forEach(b=>b.onclick=()=>copy(render(b.dataset.copy)));document.querySelectorAll("input").forEach(i=>i.oninput=refresh);refresh();
+</script>
+</body></html>

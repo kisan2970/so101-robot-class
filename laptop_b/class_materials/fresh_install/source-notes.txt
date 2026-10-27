@@ -1,0 +1,21 @@
+Sources
+
+- OpenAI: Using Codex with your ChatGPT plan
+  https://help.openai.com/en/articles/11369540-using-codex-with-your-chatgpt-plan
+  Free-plan availability and plan-dependent usage limits.
+
+- OpenAI: Moving to the new ChatGPT desktop app
+  https://help.openai.com/en/articles/20001276-moving-to-the-new-chatgpt-desktop-app
+  Windows desktop app includes Chat, Work, and Codex; first-time installation and sign-in.
+
+- OpenAI download page
+  https://chatgpt.com/download/
+
+- Hugging Face LeRobot installation
+  https://huggingface.co/docs/lerobot/main/en/installation
+  Current Python requirement and core_scripts/Feetech installation guidance.
+
+- Hugging Face LeRobot SO-101
+  https://huggingface.co/docs/lerobot/so101
+  Port discovery, motor setup, and calibration commands.
+

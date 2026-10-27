@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Windows에서 SO-101 로봇팔을 설치하고 teleoperation까지 진행하는 학생용 실습 안내서" />
+  <title>SO-101 실습 가이드</title>
+  <link rel="stylesheet" href="./style.css" />
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="SO-101 실습 가이드 처음으로">
+      <span class="brand-mark">SO</span>
+      <span>SO-101 실습 가이드</span>
+    </a>
+    <div class="top-actions">
+      <span class="progress-label" id="progressLabel">0 / 8 완료</span>
+      <button class="icon-button" id="resetProgress" type="button" title="진행 상태 초기화" aria-label="진행 상태 초기화">
+        <i data-lucide="rotate-ccw"></i>
+      </button>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="intro">
+      <div class="intro-copy">
+        <p class="eyebrow">WINDOWS · LEROBOT · SO-101</p>
+        <h1>연결부터 teleoperation까지,<br />한 단계씩 따라가기</h1>
+        <p class="lede">코드를 몰라도 괜찮습니다. 현재 단계의 명령을 복사하고, 결과를 확인한 뒤 다음 단계로 이동하세요.</p>
+        <div class="intro-actions">
+          <a class="primary-button" href="#step-1">실습 시작 <i data-lucide="arrow-down"></i></a>
+          <button class="secondary-button" type="button" data-tab-target="prompt">Codex용 프롬프트 보기</button>
+        </div>
+      </div>
+      <div class="arm-visual" aria-label="리더암이 명령을 보내고 팔로워암이 따라 움직이는 구조">
+        <div class="arm-unit leader-unit">
+          <span class="unit-label">LEADER</span>
+          <div class="robot-arm"><span class="base"></span><span class="link link-a"></span><span class="joint joint-a"></span><span class="link link-b"></span><span class="joint joint-b"></span><span class="gripper"></span></div>
+          <small>사람이 움직이는 팔</small>
+        </div>
+        <div class="signal">
+          <i data-lucide="radio-tower"></i>
+          <span>관절 위치 전달</span>
+        </div>
+        <div class="arm-unit follower-unit">
+          <span class="unit-label">FOLLOWER</span>
+          <div class="robot-arm"><span class="base"></span><span class="link link-a"></span><span class="joint joint-a"></span><span class="link link-b"></span><span class="joint joint-b"></span><span class="gripper"></span></div>
+          <small>명령을 따라 움직이는 팔</small>
+        </div>
+      </div>
+    </section>
+
+    <nav class="tabs" aria-label="페이지 보기">
+      <button class="tab active" type="button" data-tab="guide"><i data-lucide="list-checks"></i> 학생용 실습</button>
+      <button class="tab" type="button" data-tab="prompt"><i data-lucide="message-square-code"></i> Codex 프롬프트</button>
+    </nav>
+
+    <section class="tab-panel active" id="guidePanel" data-panel="guide">
+      <aside class="step-nav" aria-label="실습 단계">
+        <p class="nav-title">실습 순서</p>
+        <a href="#step-1"><span>1</span> 안전 확인</a>
+        <a href="#step-2"><span>2</span> PC 환경 확인</a>
+        <a href="#step-3"><span>3</span> LeRobot 설치</a>
+        <a href="#step-4"><span>4</span> COM 포트 찾기</a>
+        <a href="#step-5"><span>5</span> 모터 ID 지정</a>
+        <a href="#step-6"><span>6</span> 캘리브레이션</a>
+        <a href="#step-7"><span>7</span> 안전 teleop</a>
+        <a href="#step-8"><span>8</span> 일반 teleop</a>
+      </aside>
+
+      <div class="steps">
+        <article class="step critical" id="step-1" data-step="1">
+          <div class="step-head"><span class="step-number">01</span><div><p class="step-kicker">시작 전</p><h2>전원 스위치와 작업 공간부터 확인합니다</h2></div><label class="check"><input type="checkbox" data-progress="1" /><span></span></label></div>
+          <div class="safety-grid">
+            <div><i data-lucide="power"></i><strong>전원</strong><p>이상할 때 바로 끌 수 있도록 손이 닿는 곳에 둡니다.</p></div>
+            <div><i data-lucide="scan-line"></i><strong>공간</strong><p>팔이 움직이는 범위에서 사람과 물건을 치웁니다.</p></div>
+            <div><i data-lucide="hand"></i><strong>관절</strong><p>기구적으로 걸리는 곳까지 억지로 밀지 않습니다.</p></div>
+          </div>
+        </article>
+
+        <article class="step" id="step-2" data-step="2">
+          <div class="step-head"><span class="step-number">02</span><div><p class="step-kicker">환경 확인</p><h2>Python과 Git이 준비되어 있는지 확인합니다</h2></div><label class="check"><input type="checkbox" data-progress="2" /><span></span></label></div>
+          <p class="explain">PowerShell을 열고 아래 명령을 한 줄씩 실행합니다. 버전 번호가 보이면 준비된 상태입니다.</p>
+          <pre><code>py --version
+python --version
+git --version</code><button class="copy-button" type="button"><i data-lucide="copy"></i><span>복사</span></button></pre>
+        </article>
+
+        <article class="step" id="step-3" data-step="3">
+          <div class="step-head"><span class="step-number">03</span><div><p class="step-kicker">프로그램 설치</p><h2>전용 작업 공간을 만들고 LeRobot을 설치합니다</h2></div><label class="check"><input type="checkbox" data-progress="3" /><span></span></label></div>
+          <p class="explain">가상환경은 이 실습만을 위한 독립된 Python 공간입니다. Activate 없이 실행 파일을 직접 사용합니다.</p>
+          <pre><code>mkdir "$env:USERPROFILE\Documents\lerobot-so101"
+cd "$env:USERPROFILE\Documents\lerobot-so101"
+py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\pip.exe install "lerobot[feetech]" opencv-python pyserial</code><button class="copy-button" type="button"><i data-lucide="copy"></i><span>복사</span></button></pre>
+          <div class="note"><i data-lucide="info"></i><span>문서 폴더가 OneDrive에 있다면 경로를 <code>$env:USERPROFILE\OneDrive\문서\lerobot-so101</code>로 바꿉니다.</span></div>
+        </article>
+
+        <article class="step" id="step-4" data-step="4">
+          <div class="step-head"><span class="step-number">04</span><div><p class="step-kicker">USB 연결</p><h2>리더암과 팔로워암의 COM 포트를 찾습니다</h2></div><label class="check"><input type="checkbox" data-progress="4" /><span></span></label></div>
+          <p class="explain">두 팔을 USB로 연결하고 실행합니다. Bluetooth 포트는 무시하고 <strong>USB-Enhanced-SERIAL CH343</strong>을 찾습니다.</p>
+          <pre><code>.\.venv\Scripts\python.exe -m serial.tools.list_ports -v</code><button class="copy-button" type="button"><i data-lucide="copy"></i><span>복사</span></button></pre>
+          <div class="port-config">
+            <label>Leader COM <input id="leaderPort" value="COM10" spellcheck="false" /></label>
+            <label>Follower COM <input id="followerPort" value="COM11" spellcheck="false" /></label>
+          </div>
+          <p class="microcopy">한쪽 USB를 뺐을 때 사라지는 번호를 보면 어떤 팔인지 구분할 수 있습니다.</p>
+        </article>
+
+        <article class="step" id="step-5" data-step="5">
+          <div class="step-head"><span class="step-number">05</span><div><p class="step-kicker">모터 설정</p><h2>각 관절에 ID 1부터 6까지 이름표를 붙입니다</h2></div><label class="check"><input type="checkbox" data-progress="5" /><span></span></label></div>
+          <div class="motor-map">
+            <span><b>1</b>어깨 좌우</span><span><b>2</b>어깨 위아래</span><span><b>3</b>팔꿈치</span><span><b>4</b>손목 굽힘</span><span><b>5</b>손목 회전</span><span><b>6</b>집게</span>
+          </div>
+          <div class="warning"><i data-lucide="triangle-alert"></i><div><strong>설정할 모터 하나만 연결합니다.</strong><p>같은 ID의 모터를 여러 개 연결한 채 변경하면 충돌할 수 있습니다.</p></div></div>
+          <p class="command-label">Leader arm</p>
+          <pre><code data-template>.\.venv\Scripts\lerobot-setup-motors.exe --teleop.type=so101_leader --teleop.port={{LEADER}} --teleop.id=my_so101_leader</code><button class="copy-button" type="button"><i data-lucide="copy"></i><span>복사</span></button></pre>
+          <p class="command-label">Follower arm</p>
+          <pre><code data-template>.\.venv\Scripts\lerobot-setup-motors.exe --robot.type=so101_follower --robot.port={{FOLLOWER}} --robot.id=my_so101_follower</code><button class="copy-button" type="button"><i data-lucide="copy"></i><span>복사</span></button></pre>
+        </article>
+
+        <article class="step" id="step-6" data-step="6">
+          <div class="step-head"><span class="step-number">06</span><div><p class="step-kicker">움직임 기준</p><h2>두 팔의 중간 위치와 사용 범위를 기록합니다</h2></div><label class="check"><input type="checkbox" data-progress="6" /><span></span></label></div>
+          <div class="pose-line"><span>베이스 정면</span><i data-lucide="chevron-right"></i><span>어깨 중간</span><i data-lucide="chevron-right"></i><span>팔꿈치 약 90°</span><i data-lucide="chevron-right"></i><span>집게 반쯤 열기</span></div>
+          <p class="command-label">Follower calibration</p>
+          <pre><code data-template>.\.venv\Scripts\lerobot-calibrate.exe --robot.type=so101_follower --robot.port={{FOLLOWER}} --robot.id=my_so101_follower</code><button class="copy-button" type="button"><i data-lucide="copy"></i><span>복사</span></button></pre>
+          <p class="command-label">Leader calibration</p>
+          <pre><code data-template>.\.venv\Scripts\lerobot-calibrate.exe --teleop.type=so101_leader --teleop.port={{LEADER}} --teleop.id=my_so101_leader</code><button class="copy-button" type="button"><i data-lucide="copy"></i><span>복사</span></button></pre>
+          <div class="note"><i data-lucide="circle-help"></i><span>새로 캘리브레이션할 때 질문이 나오면 <code>c</code>를 입력합니다. wrist_roll은 기록표에서 제외될 수 있으며 정상입니다.</span></div>
+        </article>
+
+        <article class="step" id="step-7" data-step="7">
+          <div class="step-head"><span class="step-number">07</span><div><p class="step-kicker">첫 동작</p><h2>10초 동안 안전 제한 teleoperation을 시험합니다</h2></div><label class="check"><input type="checkbox" data-progress="7" /><span></span></label></div>
+          <p class="explain">처음에는 이동량과 속도를 제한합니다. 갑자기 튀거나 이상한 소리가 나면 즉시 전원을 끕니다.</p>
+          <pre><code data-template>.\.venv\Scripts\lerobot-teleoperate.exe --robot.type=so101_follower --robot.port={{FOLLOWER}} --robot.id=my_so101_follower --robot.max_relative_target=3 --teleop.type=so101_leader --teleop.port={{LEADER}} --teleop.id=my_so101_leader --fps=15 --teleop_time_s=10</code><button class="copy-button" type="button"><i data-lucide="copy"></i><span>복사</span></button></pre>
+          <ul class="check-list"><li>관절 방향이 맞는가?</li><li>1~6번 모터가 모두 움직이는가?</li><li>과부하나 USB 끊김이 없는가?</li></ul>
+        </article>
+
+        <article class="step success" id="step-8" data-step="8">
+          <div class="step-head"><span class="step-number">08</span><div><p class="step-kicker">정상 운전</p><h2>안전 테스트가 끝났다면 일반 teleoperation을 실행합니다</h2></div><label class="check"><input type="checkbox" data-progress="8" /><span></span></label></div>
+          <pre><code data-template>.\.venv\Scripts\lerobot-teleoperate.exe --robot.type=so101_follower --robot.port={{FOLLOWER}} --robot.id=my_so101_follower --teleop.type=so101_leader --teleop.port={{LEADER}} --teleop.id=my_so101_leader</code><button class="copy-button" type="button"><i data-lucide="copy"></i><span>복사</span></button></pre>
+          <div class="completion"><i data-lucide="badge-check"></i><div><strong>Teleoperation 준비 완료</strong><p>이 단계까지 안정적으로 작동하면 연결, 모터 설정, 캘리브레이션이 완료된 것입니다.</p></div></div>
+        </article>
+
+        <section class="trouble">
+          <p class="eyebrow">TROUBLESHOOTING</p><h2>자주 나오는 오류</h2>
+          <details><summary>Could not connect on port</summary><p>COM 번호, USB 인식, FD 프로그램 점유 여부를 확인합니다.</p></details>
+          <details><summary>Missing motor IDs</summary><p>모터 ID 중복, 케이블 연결, 모터 전원을 확인합니다.</p></details>
+          <details><summary>Incorrect status packet</summary><p>중복 ID, 케이블 접촉, 전원 불안정을 확인합니다.</p></details>
+          <details><summary>ClearCommError failed / Access denied</summary><p>실행 중 USB가 끊겼을 가능성이 큽니다. 전원을 끄고 USB를 다시 연결합니다.</p></details>
+          <details><summary>시작하자마자 크게 움직임</summary><p>즉시 전원을 끄고 leader/follower 포트와 캘리브레이션을 다시 확인합니다.</p></details>
+        </section>
+      </div>
+    </section>
+
+    <section class="tab-panel prompt-panel" id="promptPanel" data-panel="prompt">
+      <div class="prompt-header"><div><p class="eyebrow">CODEX TEACHING PROMPT</p><h2>다른 Codex 계정에 붙여넣기</h2><p>학생이 결과를 보내면 한 단계씩 다음 명령을 안내하도록 설정한 프롬프트입니다.</p></div><button class="primary-button" id="copyPrompt" type="button"><i data-lucide="copy"></i><span>전체 프롬프트 복사</span></button></div>
+      <pre class="prompt-box"><code id="promptText">너는 초보 학생에게 Hugging Face LeRobot 기반 SO-101 로봇팔을 가르치는 실습 조교다.
+
+학생은 Python, PowerShell, COM 포트, 모터 ID를 잘 모를 수 있다. 어려운 코드 원리보다 지금 무엇을 확인하고 무엇을 실행해야 하는지 쉽고 짧게 설명해라.
+
+최종 목표는 Windows 컴퓨터에서 SO-101 leader arm과 follower arm을 연결하고, 모터 ID 설정, 캘리브레이션, teleoperation까지 안전하게 성공하는 것이다. AI 학습, 카메라, 데이터 녹화는 진행하지 마라.
+
+지도 규칙:
+- 한 번에 모든 단계를 설명하지 말고 현재 단계의 명령 1~2개만 제공한다.
+- 학생이 출력 결과를 보내면 분석한 뒤 다음 단계로 넘어간다.
+- Windows PowerShell에서 복사 가능한 명령어를 코드블록으로 제공한다.
+- 여러 줄 백틱 오류를 피하기 위해 가능하면 한 줄 명령을 사용한다.
+- conda 대신 Python venv를 사용한다.
+- Activate가 실패해도 .venv\Scripts 안의 실행 파일을 직접 사용한다.
+- COM 번호를 추측하지 말고 serial.tools.list_ports로 다시 찾게 한다.
+- Bluetooth COM과 USB-Enhanced-SERIAL CH343을 구분한다.
+- 모터 ID 설정은 안내된 모터 한 개만 연결한 상태에서 진행한다.
+- teleoperation은 처음에 max_relative_target=3, fps=15, 10초 제한으로 시험한다.
+- 갑작스러운 움직임, 과부하, USB 끊김이 생기면 즉시 전원을 끄게 한다.
+
+모터 ID:
+1 shoulder_pan, 2 shoulder_lift, 3 elbow_flex, 4 wrist_flex, 5 wrist_roll, 6 gripper
+
+학생에게 첫 답변에서는 Windows PowerShell을 열고 아래 결과만 보내게 해라.
+
+py --version
+python --version
+git --version
+
+아직 설치나 모터 구동 단계로 넘어가지 마라.</code></pre>
+    </section>
+  </main>
+
+  <footer><span>SO-101 Classroom Guide</span><span>Windows · LeRobot · Teleoperation</span></footer>
+</body>
+</html>

@@ -1,0 +1,13 @@
+Communication job: By the end, beginning students should be able to sort the SO-101 motors correctly and assemble leader/follower arms safely because voltage, gear ratio, motor position, and wiring are checked before power is applied.
+
+Sources:
+1. Hugging Face LeRobot SO-101 documentation: https://huggingface.co/docs/lerobot/en/so101
+2. Seeed Studio SO-ARM100/101 guide: https://wiki.seeedstudio.com/lerobot_so100m_new/
+3. TheRobotStudio SO-ARM100 repository: https://github.com/TheRobotStudio/SO-ARM100
+
+Key verified facts:
+- Follower: six STS3215 1:345 motors.
+- Leader: L1 1:191, L2 1:345, L3 1:191, L4-L6 1:147.
+- 7.4V and 12V follower variants exist. The power supply must match the installed motor voltage.
+- USB does not supply servo power. USB and the correct external power supply are both needed.
+- Configure motor IDs one motor at a time.

@@ -1,0 +1,112 @@
+Python 설치
+
+winget install --id Python.Python.3.12 -e --source winget
+
+# 설치 후 PowerShell을 다시 열고 확인
+py -3.12 --version
+
+Python 3.12.x가 나오면 다음 단계로 진행
+
+----------------------------------------
+
+작업 폴더와 가상환경
+
+$Project = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'lerobot-so101'
+New-Item -ItemType Directory -Force -Path $Project | Out-Null
+Set-Location -LiteralPath $Project
+py -3.12 -m venv .venv
+
+문서 폴더에 lerobot-so101을 만든다.
+.venv는 이 실습에서 사용할 Python 공간이다.
+
+----------------------------------------
+
+LeRobot 설치
+
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+
+.\.venv\Scripts\python.exe -m pip install "lerobot[core_scripts,feetech]" pyserial
+
+다운로드와 설치가 끝날 때까지 기다린다.
+에러가 나오면 다음 명령어를 실행하지 않는다.
+
+----------------------------------------
+
+설치 확인과 다시 접속
+
+$Project = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'lerobot-so101'
+Set-Location -LiteralPath $Project
+.\.venv\Scripts\python.exe -m pip show lerobot
+.\.venv\Scripts\lerobot-calibrate.exe --help
+
+LeRobot 정보와 도움말이 나오면 설치 확인 완료
+PowerShell을 새로 열었을 때도 위의 첫 두 줄부터 실행
+
+----------------------------------------
+
+USB 포트 확인
+
+.\.venv\Scripts\python.exe -m serial.tools.list_ports -v
+
+팔을 한 개씩 연결해 새로 나타나는 COM 번호를 찾는다.
+USB Serial / CH343 등의 장치 이름을 확인한다.
+Bluetooth 직렬 포트는 로봇팔 포트가 아니다.
+
+----------------------------------------
+
+이후 명령어에서 사용할 포트
+
+$LeaderPort = 'COM10'
+$FollowerPort = 'COM11'
+
+COM10과 COM11은 예시다. 실제로 찾은 번호로 바꾼다.
+한 PowerShell 창에서 계속 진행한다.
+창을 새로 열면 작업 폴더 이동과 포트 변수 설정을 다시 한다.
+
+----------------------------------------
+
+리더암 모터 ID 지정
+
+.\.venv\Scripts\lerobot-setup-motors.exe --teleop.type=so101_leader --teleop.port=$LeaderPort
+
+gripper motor id set to 6: 집게 번호 설정 완료
+다음 관절 이름이 나오면 전원을 끄고 모터를 교체한다.
+6개 모두 완료하면 명령어가 끝난다.
+
+----------------------------------------
+
+팔로워암 모터 ID 지정
+
+.\.venv\Scripts\lerobot-setup-motors.exe --robot.type=so101_follower --robot.port=$FollowerPort
+
+리더암과 같은 방법으로 6개를 설정한다.
+완료 후 전원을 끄고 모터 케이블을 모두 연결한다.
+제어 보드에서 각 모터로 이어지는 연결을 확인한다.
+
+----------------------------------------
+
+팔로워암 캘리브레이션
+
+.\.venv\Scripts\lerobot-calibrate.exe --robot.type=so101_follower --robot.port=$FollowerPort --robot.id=student_follower
+
+기존 보정 파일 사용 질문이 나오면 c 입력 후 Enter
+중간 자세 확인 질문에서 자세를 잡고 Enter
+
+----------------------------------------
+
+리더암 캘리브레이션
+
+.\.venv\Scripts\lerobot-calibrate.exe --teleop.type=so101_leader --teleop.port=$LeaderPort --teleop.id=student_leader
+
+리더암도 중간 자세와 움직임 범위를 측정한다.
+다시 측정할 때는 c 입력 후 Enter
+Calibration saved to 메시지가 나오는지 확인
+
+----------------------------------------
+
+선택 실습: 1분 텔레오피
+
+.\.venv\Scripts\lerobot-teleoperate.exe --robot.type=so101_follower --robot.port=$FollowerPort --robot.id=student_follower --teleop.type=so101_leader --teleop.port=$LeaderPort --teleop.id=student_leader --fps=15 --teleop_time_s=60 --robot.max_relative_target=3
+
+Ctrl+C로 중단 / 60초가 지나면 자동 종료
+종료 시 토크가 풀려 팔이 내려올 수 있음

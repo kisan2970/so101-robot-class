@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SO-101 수업 도우미</title>
+  <style>
+    :root{--ink:#17201e;--muted:#5d6965;--paper:#fff;--line:#cdd5d2;--green:#117a65;--green-soft:#e2f3ed;--blue:#2368b1;--blue-soft:#e7f0fb;--yellow:#a66b00;--yellow-soft:#fff2cc;--red:#b62d32;--red-soft:#fde7e8;--dark:#1d2825}
+    *{box-sizing:border-box} body{margin:0;background:#f4f6f5;color:var(--ink);font-family:"Malgun Gothic","Segoe UI",sans-serif;letter-spacing:0}
+    header{background:var(--dark);color:#fff;padding:28px 24px} header div,main,footer div{max-width:1100px;margin:auto}
+    h1{font-size:30px;margin:0 0 8px} header p{margin:0;color:#d8e2df;font-size:16px}
+    main{padding:24px} .setup{background:var(--paper);border:1px solid var(--line);padding:20px;margin-bottom:18px}
+    h2{font-size:22px;margin:0 0 14px} h3{font-size:19px;margin:0 0 8px} p{line-height:1.65;margin:6px 0;color:var(--muted)}
+    .inputs{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
+    input{width:100%;height:42px;border:1px solid var(--line);padding:0 12px;font:inherit;background:#fff}
+    .notice{padding:14px 16px;border-left:5px solid var(--yellow);background:var(--yellow-soft);margin:16px 0;font-weight:700}
+    nav{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0} nav a{color:var(--blue);font-weight:700;text-decoration:none;border-bottom:2px solid var(--blue)}
+    .stage{background:var(--paper);border-top:6px solid var(--green);padding:22px;margin:0 0 18px}.stage.danger{border-color:var(--red)}
+    .stage-head{display:flex;align-items:start;justify-content:space-between;gap:20px}.number{font-size:13px;font-weight:800;color:var(--green);text-transform:uppercase}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}button{height:42px;border:0;padding:0 16px;font:700 14px inherit;cursor:pointer;background:var(--green);color:#fff}button.secondary{background:var(--blue)}button:hover{filter:brightness(.92)}
+    pre{white-space:pre-wrap;word-break:break-word;background:#15201d;color:#eaf6f1;padding:16px;line-height:1.55;font:14px Consolas,monospace;overflow:auto;margin:14px 0 0}
+    .result{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}.ok,.check{padding:13px 14px}.ok{background:var(--green-soft)}.check{background:var(--blue-soft)}
+    .done{color:var(--green);font-weight:800}.warn{color:var(--red);font-weight:800}footer{background:#dfe6e3;padding:22px 24px;margin-top:30px;font-size:13px}
+    #toast{position:fixed;right:18px;bottom:18px;background:#17201e;color:#fff;padding:12px 16px;display:none;z-index:10}
+    @media(max-width:760px){.inputs,.result{grid-template-columns:1fr}.stage-head{display:block}main{padding:12px}h1{font-size:25px}}
+  </style>
+</head>
+<body>
+  <header><div><h1>SO-101 모터 ID·캘리브레이션 수업</h1><p>현재 단계의 버튼을 눌러 Codex 프롬프트 또는 PowerShell 명령어를 복사하세요.</p></div></header>
+  <main>
+    <section class="setup">
+      <h2>수업 정보 입력</h2>
+      <div class="inputs">
+        <div class="field"><label for="folder">LeRobot 작업 폴더</label><input id="folder" value="$env:USERPROFILE\OneDrive\문서\lerobot-so101"></div>
+        <div class="field"><label for="leader">리더암 포트</label><input id="leader" value="COM10"></div>
+        <div class="field"><label for="follower">팔로워암 포트</label><input id="follower" value="COM11"></div>
+      </div>
+      <div class="notice">포트 번호는 예시입니다. 먼저 2단계에서 실제 포트를 확인한 뒤 수정하세요.</div>
+      <nav><a href="#s0">Codex 시작</a><a href="#s2">포트 확인</a><a href="#s3">리더 ID</a><a href="#s4">팔로워 ID</a><a href="#s6">팔로워 캘리브레이션</a><a href="#s7">리더 캘리브레이션</a><a href="#err">오류 진단</a></nav>
+    </section>
+
+    <section class="stage" id="s0"><div class="stage-head"><div><div class="number">시작</div><h3>Codex에게 수업 규칙 알려주기</h3><p>새 대화를 열 때 한 번만 넣습니다.</p></div></div><div class="actions"><button data-copy="master">Codex 시작 프롬프트 복사</button></div><pre id="master"></pre></section>
+    <section class="stage" id="s1"><div class="number">1단계</div><h3>환경 확인</h3><p>가상환경을 직접 활성화하지 않아도 <code>.venv</code> 안의 실행 파일을 사용할 수 있습니다.</p><div class="actions"><button data-copy="envPrompt">Codex 프롬프트 복사</button><button class="secondary" data-copy="envCmd">PowerShell 명령 복사</button></div><pre id="envCmd"></pre><div class="result"><div class="ok"><b>정상</b><br>Python 버전과 LeRobot 패키지 정보가 출력됨</div><div class="check"><b>확인</b><br><code>.venv\Scripts\python.exe</code>가 실제로 존재하는가?</div></div></section>
+    <section class="stage" id="s2"><div class="number">2단계</div><h3>COM 포트 확인</h3><p><code>USB-Enhanced-SERIAL CH343</code>가 SO-101 제어 보드입니다. Bluetooth 포트는 선택하지 않습니다.</p><div class="actions"><button data-copy="portPrompt">Codex 프롬프트 복사</button><button class="secondary" data-copy="portCmd">PowerShell 명령 복사</button></div><pre id="portCmd"></pre><div class="result"><div class="ok"><b>정상</b><br>CH343 장치와 COM 번호가 출력됨</div><div class="check"><b>구별법</b><br>한 팔을 뺐다가 다시 조회해 사라졌다 나타나는 포트를 기록</div></div></section>
+    <section class="stage danger" id="s3"><div class="number">3단계</div><h3>리더암 모터 ID 1~6 지정</h3><p class="warn">ID를 지정할 대상 모터 한 개만 제어 보드에 연결합니다.</p><div class="actions"><button data-copy="leaderSetupPrompt">Codex 프롬프트 복사</button><button class="secondary" data-copy="leaderSetupCmd">PowerShell 명령 복사</button></div><pre id="leaderSetupCmd"></pre><div class="result"><div class="ok"><b>순서</b><br>1번 모터 연결 → 안내 완료 → 전원 OFF → 다음 모터</div><div class="check"><b>금지</b><br>여러 모터를 연결한 채 같은 ID를 쓰지 않기</div></div></section>
+    <section class="stage danger" id="s4"><div class="number">4단계</div><h3>팔로워암 모터 ID 1~6 지정</h3><p class="warn">리더암은 분리하고 팔로워암만 연결합니다.</p><div class="actions"><button data-copy="followerSetupPrompt">Codex 프롬프트 복사</button><button class="secondary" data-copy="followerSetupCmd">PowerShell 명령 복사</button></div><pre id="followerSetupCmd"></pre><div class="result"><div class="ok"><b>완료 기준</b><br>ID 1, 2, 3, 4, 5, 6을 각각 한 번씩 지정</div><div class="check"><b>기록</b><br>모터 라벨과 실제 관절 위치를 함께 확인</div></div></section>
+    <section class="stage" id="s5"><div class="number">5단계</div><h3>모터 6개 인식 확인</h3><p>이 단계에서는 로봇을 움직이지 않고 통신만 확인합니다.</p><div class="actions"><button data-copy="verifyPrompt">Codex 프롬프트 복사</button></div><pre id="verifyPrompt"></pre><div class="result"><div class="ok"><b>정상</b><br>Expected와 Found에 1~6이 모두 표시됨</div><div class="check"><b>Missing ID</b><br>해당 모터의 케이블·ID·전원을 다시 확인</div></div></section>
+    <section class="stage danger" id="s6"><div class="number">6단계</div><h3>팔로워암 캘리브레이션</h3><p>팔을 안정적인 중간 자세에 놓고, 안내가 시작되면 관절을 하나씩 천천히 움직입니다.</p><div class="actions"><button data-copy="followerCalPrompt">Codex 프롬프트 복사</button><button class="secondary" data-copy="followerCalCmd">PowerShell 명령 복사</button></div><pre id="followerCalCmd"></pre><div class="result"><div class="ok"><b>정상</b><br><code>Calibration saved to ...json</code></div><div class="check"><b>주의</b><br>기구 끝에서 억지로 밀거나 0/4095 경계를 반복해서 넘기지 않기</div></div></section>
+    <section class="stage danger" id="s7"><div class="number">7단계</div><h3>리더암 캘리브레이션</h3><p>팔로워와 같은 방식이지만 <code>--teleop</code> 옵션을 사용합니다.</p><div class="actions"><button data-copy="leaderCalPrompt">Codex 프롬프트 복사</button><button class="secondary" data-copy="leaderCalCmd">PowerShell 명령 복사</button></div><pre id="leaderCalCmd"></pre><div class="result"><div class="ok"><b>정상</b><br>teleoperators 폴더에 calibration JSON 저장</div><div class="check"><b>다시 실행</b><br>기존 파일 질문에서 재측정하려면 <code>c</code> 입력</div></div></section>
+    <section class="stage danger" id="err"><div class="number">문제 해결</div><h3>오류 메시지를 Codex에 전달</h3><p>Traceback의 마지막 20~30줄과 실행 명령어를 함께 전달합니다.</p><div class="actions"><button data-copy="errorPrompt">오류 진단 프롬프트 복사</button></div><pre id="errorPrompt"></pre></section>
+  </main>
+  <footer><div><b>수업 범위:</b> 연결 확인 → 모터 ID → 모터 인식 → 캘리브레이션. AI 학습·카메라·데이터 수집은 진행하지 않습니다.</div></footer>
+  <div id="toast">복사했습니다.</div>
+  <script>
+    const $=id=>document.getElementById(id); const vars=()=>({folder:$("folder").value.trim(),leader:$("leader").value.trim().toUpperCase(),follower:$("follower").value.trim().toUpperCase()});
+    const templates={
+      master:`너는 학교 SO-101 로봇팔 실습을 도와주는 개발 도우미야.\n\nWindows PowerShell과 LeRobot SO-101 리더암·팔로워암을 사용해. 작업 폴더는 학생이 알려주는 경로, 가상환경은 .venv야.\n\n수업 범위는 설치·COM 포트 확인, 모터 ID 1~6 지정, 모터 인식 확인, 리더·팔로워 캘리브레이션까지야. AI 학습, 카메라, 데이터 수집으로 넘어가지 마.\n\n한 번에 한 단계만 안내하고 결과를 기다려. 명령어는 PowerShell 코드블록으로 줘. 포트를 추측하지 말고 출력으로 확인해. 움직이기 전 안전 주의사항을 알려줘. 오류는 Traceback 마지막 부분을 기준으로 설명해. 파일 삭제·수정 전 확인받고, ID 지정은 모터 한 개만 연결한 상태로 진행해. 학생이 '다음'이라고 하면 다음 단계로 넘어가.\n\n먼저 작업 폴더, 현재 연결한 팔, 외부 모터 전원 연결 여부를 물어봐.`,
+      envPrompt:`작업 폴더는 {{folder}}야. Python, .venv, LeRobot이 정상인지 한 번에 한 명령어씩 확인해 줘.`,
+      envCmd:`cd "{{folder}}"\n.\\.venv\\Scripts\\python.exe --version\n.\\.venv\\Scripts\\python.exe -m pip show lerobot`,
+      portPrompt:`SO-101의 실제 COM 포트를 찾게 도와줘. Bluetooth 포트와 CH343 USB 포트를 구분하고 한 팔씩 뺐다 연결하는 확인법을 사용해.`,
+      portCmd:`cd "{{folder}}"\n.\\.venv\\Scripts\\python.exe -m serial.tools.list_ports -v`,
+      leaderSetupPrompt:`지금 리더암만 연결했고 포트는 {{leader}}야. 대상 모터 한 개씩만 연결하여 ID 1부터 6까지 지정하도록 한 단계씩 안내해 줘.`,
+      leaderSetupCmd:`cd "{{folder}}"\n.\\.venv\\Scripts\\lerobot-setup-motors.exe --teleop.type=so101_leader --teleop.port={{leader}}`,
+      followerSetupPrompt:`지금 팔로워암만 연결했고 포트는 {{follower}}야. 대상 모터 한 개씩만 연결하여 ID 1부터 6까지 지정하도록 한 단계씩 안내해 줘.`,
+      followerSetupCmd:`cd "{{folder}}"\n.\\.venv\\Scripts\\lerobot-setup-motors.exe --robot.type=so101_follower --robot.port={{follower}}`,
+      verifyPrompt:`작업 폴더는 {{folder}}이고 현재 연결한 팔의 포트를 확인했어. 모터 ID 1부터 6이 모두 통신되는지 움직임 없이 확인하는 안전한 방법을 안내해 줘.`,
+      followerCalPrompt:`팔로워암 포트는 {{follower}}야. my_so101_follower라는 ID로 안전한 중간 자세부터 캘리브레이션을 한 단계씩 안내해 줘.`,
+      followerCalCmd:`cd "{{folder}}"\n.\\.venv\\Scripts\\lerobot-calibrate.exe --robot.type=so101_follower --robot.port={{follower}} --robot.id=my_so101_follower`,
+      leaderCalPrompt:`리더암 포트는 {{leader}}야. my_so101_leader라는 ID로 안전한 중간 자세부터 캘리브레이션을 한 단계씩 안내해 줘.`,
+      leaderCalCmd:`cd "{{folder}}"\n.\\.venv\\Scripts\\lerobot-calibrate.exe --teleop.type=so101_leader --teleop.port={{leader}} --teleop.id=my_so101_leader`,
+      errorPrompt:`SO-101 실습 중 오류가 발생했어.\n\n현재 단계: [입력]\n사용한 포트: [입력]\n실행한 명령어: [붙여넣기]\n오류 메시지: [Traceback 마지막 20~30줄]\n\n로봇을 움직이는 명령을 바로 제안하지 말고 전원, 포트 점유, 케이블, 모터 ID, 펌웨어, 기구 간섭 순서로 안전하게 진단해 줘.`
+    };
+    function render(key){const v=vars();return templates[key].replaceAll("{{folder}}",v.folder).replaceAll("{{leader}}",v.leader).replaceAll("{{follower}}",v.follower)}
+    function refresh(){["master","envCmd","portCmd","leaderSetupCmd","followerSetupCmd","verifyPrompt","followerCalCmd","leaderCalCmd","errorPrompt"].forEach(k=>{if($(k))$(k).textContent=render(k)})}
+    async function copyText(text){try{await navigator.clipboard.writeText(text)}catch(e){const t=document.createElement("textarea");t.value=text;document.body.appendChild(t);t.select();document.execCommand("copy");t.remove()}const toast=$("toast");toast.style.display="block";setTimeout(()=>toast.style.display="none",1300)}
+    document.querySelectorAll("button[data-copy]").forEach(b=>b.addEventListener("click",()=>copyText(render(b.dataset.copy))));
+    document.querySelectorAll("input").forEach(i=>i.addEventListener("input",refresh));refresh();
+  </script>
+</body>
+</html>
