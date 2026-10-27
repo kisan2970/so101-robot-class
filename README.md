@@ -183,6 +183,7 @@ patches/                   LeRobot 팔로워 보정 패치(연결 시 튀지 않
 autograsp/config/          rig.json(포트·카메라·자세), 녹화 계획, 안전 범위 예시
 autograsp/plugin/          안전 필터가 들어간 팔로워(관절 범위·속도 제한·비상 정지)
 autograsp/tools/           녹화·학습·평가·비주얼 서보 도구
+docs/PROJECT_LOG.md        개발 과정과 실험 결과 기록
 ```
 
 LeRobot(Apache-2.0, Hugging Face)을 기반으로 합니다.

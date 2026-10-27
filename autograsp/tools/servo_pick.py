@@ -2,6 +2,7 @@
 
     python autograsp/tools/servo_pick.py --teach-start        # hand-position the FOLLOWER where it should start
     python autograsp/tools/servo_pick.py --teach-place        # hand-position the FOLLOWER where the dice is released
+    python autograsp/tools/servo_pick.py --teach-grasp        # jaws hand-placed around the dice -> servo image goal
     python autograsp/tools/servo_pick.py                       # one pick-and-place, asks Enter between phases
     python autograsp/tools/servo_pick.py --auto                # no Enter prompts (after the steps are trusted)
 
@@ -33,6 +34,13 @@ DT = 1 / 30
 
 class Abort(RuntimeError):
     pass
+
+
+def snap(img, name: str) -> None:
+    """Save a wrist frame to autograsp/runs/servo/<name>.jpg (for checking the grasp afterwards)."""
+    out = CONFIG_DIR.parent / "runs" / "servo"
+    out.mkdir(parents=True, exist_ok=True)
+    cv2.imwrite(str(out / f"{name}.jpg"), img)
 
 
 def feat(det) -> np.ndarray:
@@ -74,9 +82,11 @@ class Rig:
         q = {m: obs[f"{m}.pos"] for m in [*ARM, "wrist_roll", "gripper"]}
         return q, cv2.cvtColor(obs["wrist"], cv2.COLOR_RGB2BGR)
 
-    def dice(self, img, tracking=True):
-        d = find_dice(img, prev=self.prev if tracking else None, min_area=self.min_area)
+    def dice(self, img, tracking=True, reacquire=True, max_jump=140):
+        d = find_dice(img, prev=self.prev if tracking else None, min_area=self.min_area, max_jump=max_jump)
         if d is None and tracking and self.prev is not None:
+            if not reacquire:  # servo: keep the last position so a lost frame cannot jump to grass/track
+                return None
             d = find_dice(img, min_area=self.min_area)  # re-acquire anywhere if the track was lost
         self.prev = None if d is None else (d[0], d[1])
         return d
@@ -143,6 +153,53 @@ def teach_pose(rig_cfg, key: str) -> None:
     print(f"saved to rig.json {key}")
 
 
+def teach_grasp(rig_cfg) -> None:
+    """Hand-place the open jaws around the dice (torque off) and store the dice's image centre + area there
+    as the servo goal (rig.json grasp_goal). Keys in the preview window: s = save, q = quit."""
+    from align_check import BASE, bus_for
+
+    c = rig_cfg["cameras"]["wrist"]
+    bus = bus_for(rig_cfg["follower"]["port"], BASE / f"robots/so_follower/{rig_cfg['follower']['id']}.json")
+    try:
+        input("팔로워 토크를 풉니다(팔이 처질 수 있으니 손으로 받치세요). 준비되면 Enter: ")
+        bus.disable_torque()
+    finally:
+        bus.disconnect(disable_torque=False)
+    cap = cv2.VideoCapture(c["index_or_path"], c.get("backend", cv2.CAP_DSHOW))
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, c["width"]); cap.set(cv2.CAP_PROP_FRAME_HEIGHT, c["height"])
+    print("집게를 벌린 채 주사위를 감싸는 위치(닫으면 바로 잡히는 높이)에 손으로 두고, 미리보기 창에서 s=저장, q=취소")
+    hist = []
+    try:
+        while True:
+            ok, f = cap.read()
+            if not ok:
+                time.sleep(0.05); continue
+            d = find_dice(f, min_area=300)
+            hist = (hist + [d])[-10:] if d else []
+            if d:
+                cv2.circle(f, (int(d[0]), int(d[1])), 16, (0, 255, 0), 3)
+            cv2.putText(f, f"{'no dice' if d is None else f'cx={d[0]:.0f} cy={d[1]:.0f} area={d[2]}'}  s=save q=quit",
+                        (10, 24), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
+            cv2.imshow("teach_grasp", f)
+            k = cv2.waitKey(1) & 0xFF
+            if k == ord("q"):
+                sys.exit("cancelled")
+            if k == ord("s"):
+                if len(hist) < 10:
+                    print("주사위가 10프레임 연속 보여야 저장돼요. 다시 s"); continue
+                snap(f, "grasp_goal")
+                break
+    finally:
+        cap.release(); cv2.destroyAllWindows()
+    goal = {"cx": round(float(np.mean([h[0] for h in hist])), 1), "cy": round(float(np.mean([h[1] for h in hist])), 1),
+            "area": round(float(np.mean([h[2] for h in hist])))}
+    path = CONFIG_DIR / "rig.json"
+    d = json.loads(path.read_text(encoding="utf-8"))
+    d["grasp_goal"] = {**goal, "_source": "taught with the jaws hand-placed around the dice (servo_pick.py --teach-grasp)"}
+    path.write_text(json.dumps(d, indent=2, ensure_ascii=False), encoding="utf-8")
+    print("saved to rig.json grasp_goal", goal)
+
+
 def avg_feat(r: Rig, n: int):
     ss = []
     for _ in range(n):
@@ -186,9 +243,11 @@ def servo(r: Rig, J: np.ndarray, a) -> bool:
     while time.time() - t0 < a.timeout:
         t_tick = time.time()
         q, img = r.read()
-        d = r.dice(img)
+        d = r.dice(img, reacquire=False, max_jump=a.max_jump)
         if d is None:
             lost += 1
+            if lost == 1:
+                snap(img, "servo_lost")
             if lost > 20:
                 r.robot.hold()
                 raise Abort("dice lost for 20 ticks")
@@ -206,13 +265,17 @@ def servo(r: Rig, J: np.ndarray, a) -> bool:
             ok_ticks += 1
             if ok_ticks >= 8:
                 print(f"converged: dice at ({d[0]:.0f},{d[1]:.0f}) area {d[2]}")
+                snap(img, "grasp_before")
                 return True
         else:
             ok_ticks = 0
         if err[2] < -a.tol_size * 2:
             r.robot.hold()
             raise Abort("dice already larger than the grasp size but not centred: too close, stopping")
-        dq_cmd = J.T @ np.linalg.solve(J @ J.T + a.damping * np.eye(3), a.gain * err)
+        # weight the size row so "get closer" is not traded away for centring (cy and size are nearly coupled)
+        W = np.diag([1.0, 1.0, a.size_weight])
+        Jw = W @ J
+        dq_cmd = Jw.T @ np.linalg.solve(Jw @ Jw.T + a.damping * np.eye(3), a.gain * (W @ err))
         dq_cmd = np.clip(dq_cmd, -a.max_dq, a.max_dq)
         # integrate the goal (do NOT restart from the measured pose each tick: friction/gravity sag swallow a
         # sub-degree offset and the arm never moves); clamp the wind-up so the goal stays near the arm
@@ -234,11 +297,21 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--teach-place", action="store_true", help="save the follower pose where the dice is released")
     ap.add_argument("--teach-start", action="store_true", help="save the follower pose the servo starts from")
+    ap.add_argument("--teach-grasp", action="store_true",
+                    help="save the dice image position/size with the jaws hand-placed around it (servo goal)")
     ap.add_argument("--auto", action="store_true", help="no Enter prompts between phases")
+    ap.add_argument("--loop", action="store_true",
+                    help="repeat forever (implies --auto): wait at the start pose until a dice is visible, pick+place, repeat. "
+                         "Esc / Ctrl+C stops")
+    ap.add_argument("--max-fails", type=int, default=5, help="--loop: stop after this many failed cycles in a row")
     ap.add_argument("--speed", type=float, default=20.0, help="big moves, deg/s")
     ap.add_argument("--probe-delta", type=float, default=4.0)
     ap.add_argument("--gain", type=float, default=0.35)
     ap.add_argument("--damping", type=float, default=100.0)
+    ap.add_argument("--max-jump", type=float, default=80.0,
+                    help="servo: max dice jump between frames in px; farther blobs (grass, track) are ignored")
+    ap.add_argument("--size-weight", type=float, default=1.0,
+                    help="weight of the size (approach) error vs the centre error in the servo step")
     ap.add_argument("--max-dq", type=float, default=1.0, help="max joint change per tick during servo, deg")
     ap.add_argument("--broyden", type=float, default=0.2)
     ap.add_argument("--windup", type=float, default=12.0, help="max distance between the goal and the measured pose, deg")
@@ -248,10 +321,21 @@ def main() -> None:
     ap.add_argument("--min-area", type=int, default=300)
     ap.add_argument("--safety-file", default=str(CONFIG_DIR / "safety.json"))
     a = ap.parse_args()
+    a.auto = a.auto or a.loop
     rig = load_rig()
     if a.teach_place or a.teach_start:
         teach_pose(rig, "place_pose" if a.teach_place else "start_pose")
         return
+    if a.teach_grasp:
+        teach_grasp(rig)
+        return
+    global GOAL_S
+    if "grasp_goal" in rig:
+        g = rig["grasp_goal"]
+        GOAL_S = feat((g["cx"], g["cy"], g["area"]))
+        print("grasp goal (taught):", {k: g[k] for k in ("cx", "cy", "area")})
+    else:
+        print("grasp goal (default from the old demos):", GOAL_PX)
     if "place_pose" not in rig:
         sys.exit("no place_pose in rig.json: run with --teach-place first")
 
@@ -278,7 +362,7 @@ def main() -> None:
         else:
             print(f"\n[{msg}]")
 
-    try:
+    def cycle():
         step("1. 시작 자세로 이동 + 그리퍼 열기")
         r.move_to({**start, "gripper": OPEN_GRIP}, a.speed)
         time.sleep(0.5)
@@ -288,7 +372,8 @@ def main() -> None:
         servo(r, J, a)
         step("4. 그리퍼 닫기")
         r.grip(CARRY_GRIP, 40.0)
-        q, _ = r.read()
+        q, img = r.read()
+        snap(img, "grasp_after")
         print("gripper now", round(q["gripper"], 1))
         if q["gripper"] < 1.5:
             raise Abort("gripper closed fully: nothing in the jaws (grasp missed)")
@@ -299,8 +384,42 @@ def main() -> None:
         r.grip(OPEN_GRIP, 60.0)
         time.sleep(0.6)
         r.move_to({**start, "gripper": OPEN_GRIP}, a.speed)
-        r.grip(REST_GRIP, 60.0)
-        print("\n완료: 주사위가 왼쪽 칸에 놓였는지 눈으로 확인하세요.")
+
+    def wait_for_dice():
+        """Idle at the start pose (gripper open) until a dice has been seen on 10 consecutive frames."""
+        r.move_to({**start, "gripper": OPEN_GRIP}, a.speed)
+        seen, announced = 0, False
+        while seen < 10:
+            seen = seen + 1 if r.dice(r.read()[1], tracking=False) is not None else 0
+            if not announced and seen == 0:
+                print("주사위 대기 중...")
+                announced = True
+            time.sleep(0.1)
+
+    try:
+        if a.loop:
+            n_ok = n_fail = fails_in_row = 0
+            while True:
+                wait_for_dice()
+                try:
+                    cycle()
+                    n_ok += 1
+                    fails_in_row = 0
+                except Abort as e:
+                    if "Esc" in str(e) or "operator" in str(e):
+                        raise
+                    n_fail += 1
+                    fails_in_row += 1
+                    print(f"\n사이클 실패({fails_in_row}/{a.max_fails}): {e}")
+                    r.keys.stop.clear()
+                    r.grip(OPEN_GRIP, 60.0)
+                    if fails_in_row >= a.max_fails:
+                        raise Abort(f"{a.max_fails} failed cycles in a row, stopping the loop")
+                print(f"[loop] 성공 {n_ok} / 실패 {n_fail}")
+        else:
+            cycle()
+            r.grip(REST_GRIP, 60.0)
+            print("\n완료: 주사위가 왼쪽 칸에 놓였는지 눈으로 확인하세요.")
     except Abort as e:
         print(f"\n중단: {e}")
     except KeyboardInterrupt:
